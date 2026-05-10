@@ -5,13 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Happy Mother's Day, Mom!</title>
     <style>
+        /* 1. Basic Layout */
         body {
-            <audio id="momSong">
-                <source src="mom.mp3" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
             background-color: #fff5f7;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -19,59 +16,125 @@
             margin: 0;
             overflow: hidden;
         }
+
+        /* 2. The Card Container */
         .card {
             background: white;
-            padding: 2rem;
+            padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 35px rgba(214, 51, 132, 0.2);
             text-align: center;
-            max-width: 400px;
+            max-width: 350px;
+            width: 90%;
+            position: relative;
             z-index: 10;
-            <button id="playBtn" onclick="toggleMusic()">Play Music 🎵</button>
-        }
-        h1 { color: #d63384; margin-bottom: 0.5rem; }
-        p { color: #555; line-height: 1.6; }
-        .heart { color: #e74c3c; font-size: 50px; animation: pulse 1.5s infinite; }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
         }
 
-        /* Simple floating animation for the background */
+        h1 { color: #d63384; margin-top: 0; }
+        p { color: #555; line-height: 1.6; font-size: 1.1rem; }
+
+        .heart-icon { 
+            color: #e74c3c; 
+            font-size: 60px; 
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* 3. The Play Button */
+        #playBtn {
+            background-color: #ff4d6d;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(255, 77, 109, 0.4);
+            transition: transform 0.2s, background 0.3s;
+        }
+
+        #playBtn:hover {
+            background-color: #ff758f;
+            transform: scale(1.05);
+        }
+
+        #playBtn:active {
+            transform: scale(0.95);
+        }
+
+        /* 4. Background Decorations */
         .bg-heart {
             position: absolute;
-            color: rgba(214, 51, 132, 0.1);
-            font-size: 20px;
+            color: rgba(214, 51, 132, 0.15);
             user-select: none;
-            animation: float 5s linear infinite;
+            z-index: 1;
+            bottom: -50px;
+            animation: float Up 6s linear infinite;
         }
-        @keyframes float {
-            from { transform: translateY(100vh); }
-            to { transform: translateY(-10vh); }
+
+        @keyframes floatUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Hidden Audio Element -->
+    <audio id="momSong" loop>
+        <source src="mom.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <div class="card">
-        <div class="heart">❤️</div>
-        <h1>Happy Mother's Day!</h1>
-        <p>Hi Mom! I built this little corner of the internet just for you. Thanks for being the best. Love you!</p>
+        <span class="heart-icon">❤️</span>
+        <h1>For the Best Mom</h1>
+        <p id="message">I have a special surprise for you! Click the button below.</p>
+        
+        <!-- The Button -->
+        <button id="playBtn" onclick="startSurprise()">Play My Song 🎵</button>
     </div>
 
     <script>
-        // Create random floating hearts
-        for (let i = 0; i < 20; i++) {
-            let heart = document.createElement('div');
-            heart.className = 'bg-heart';
-            heart.innerHTML = '🌸';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
-            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
-            document.body.appendChild(heart);
+        // 1. Logic for the Music and Message
+        function startSurprise() {
+            const music = document.getElementById('momSong');
+            const btn = document.getElementById('playBtn');
+            const msg = document.getElementById('message');
+
+            if (music.paused) {
+                music.play().catch(error => {
+                    console.log("Playback failed. Make sure song.mp3 exists in the folder!");
+                });
+                btn.innerHTML = "Pause Music ⏸️";
+                msg.innerHTML = "Happy Mother's Day! <br><br> Hope you love the song. You're the best!";
+            } else {
+                music.pause();
+                btn.innerHTML = "Play Music 🎵";
+            }
         }
+
+        // 2. Background Heart Generator
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.className = 'bg-heart';
+            const icons = ['🌸', '💖', '✨', '💕', '🌷'];
+            heart.innerHTML = icons[Math.floor(Math.random() * icons.length)];
+            
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            heart.style.animationDuration = (Math.random() * 3 + 4) + 's';
+            
+            document.body.appendChild(heart);
+
+            // Remove heart after it floats away
+            setTimeout(() => { heart.remove(); }, 6000);
+        }
+
+        // Keep creating hearts every 400ms
+        setInterval(createHeart, 400);
     </script>
 </body>
 </html>
